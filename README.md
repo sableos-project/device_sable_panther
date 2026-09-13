@@ -10,6 +10,18 @@ Panther is the primary development/validation target for the current Android 17 
 
 Common Sable behavior belongs in `platform_sable`, `packages_apps_*`, or other common repositories. This repository owns only Panther-specific integration and Panther runtime qualification evidence/requirements.
 
+## Android checkout path
+
+For the GrapheneOS-derived Panther product adapter, this repository is intended to be checked out at:
+
+```text
+vendor/sable_devices/sable_panther
+```
+
+The product name is `sable_panther`. GrapheneOS `build/envsetup.sh` discovers product-specific `cmds-for-envsetup.sh` files only through `vendor/*/<product>/cmds-for-envsetup.sh`, so the checkout path is part of the build contract rather than a cosmetic directory choice. The repository remains the Panther-specific Sable adapter even though its Android source-tree location is under `vendor/`.
+
+The adapter inherits the generated `vendor/google_devices/panther/panther.mk` substrate and then the common Sable product fragment from `vendor/sable`. Generated adevtool product files remain upstream/substrate inputs and are not Sable customization points.
+
 ## Current daily-driver milestone
 
 After Sable Start R6, Panther enters **R7 daily-driver qualification**.
