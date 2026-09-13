@@ -6,9 +6,34 @@ This repository is a device adapter and qualification boundary. It must not cont
 
 ## Current reference role
 
-Panther is the primary development/validation target for the current Android 17 / GrapheneOS 2026081300 substrate work.
+Panther is the primary development/validation target for the current Android 17 / GrapheneOS `2026091000` substrate work.
 
 Common Sable behavior belongs in `platform_sable`, `packages_apps_*`, or other common repositories. This repository owns only Panther-specific integration and Panther runtime qualification evidence/requirements.
+
+## R6 product adapter
+
+R6 introduces a thin derivative product named `sable_panther`.
+
+The adapter:
+
+- inherits the generated GrapheneOS/adevtool Panther product at `vendor/google_devices/panther/panther.mk` without modifying it;
+- inherits common Sable product composition from `vendor/sable/config/common.mk`;
+- keeps `PRODUCT_DEVICE := panther` while using `PRODUCT_NAME := sable_panther` to give Sable its own product identity;
+- derives `BUILD_ID_sable_panther` from the generated Panther `cmds-for-envsetup.sh` rather than duplicating or manually overriding the substrate Build ID.
+
+For the GrapheneOS Android 17 envsetup contract, product-specific `cmds-for-envsetup.sh` files are discovered under `vendor/*/<product>/`. The canonical Android checkout path for this repository is therefore:
+
+```text
+vendor/sable_devices/sable_panther
+```
+
+The intended R6 target invocation is:
+
+```text
+lunch sable_panther-cur-user
+```
+
+This product wrapper is Panther-specific integration only. Common package selection remains owned by `vendor_sable`.
 
 ## Current daily-driver milestone
 
