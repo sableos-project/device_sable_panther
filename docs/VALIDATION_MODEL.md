@@ -2,110 +2,92 @@
 
 Status: **normative Panther product/runtime validation model.**
 
-Panther remains the primary physical validation target for current SableOS development. Application correctness and Panther product/runtime correctness are deliberately separated so the device is not used to compensate for missing standalone app tests.
+Panther remains the primary physical validation target. Application correctness, trusted artifact production, Panther product integration and Panther runtime correctness are separate claims.
 
-## 1. Two-process boundary
+## 1. R8 boundary
 
-### Process A — outside this repository
+### A1 — outside Panther
 
-Standalone R8 application qualification happens through the application's Cargo/Gradle/upstream workflow and disposable CI/local test environments.
+Disposable source/application qualification covers Rust/Kotlin/Gradle/static/security and upstream Reader/Text Reader gates.
 
-Examples:
+### A2 — trusted standalone app build
 
-- Rust domain correctness/security;
-- Kotlin/JVM tests;
-- Android lint/static analysis;
-- standalone APK builds;
-- JNI/native ABI packaging;
-- Reader/Text Reader upstream pin/flavor tests;
-- APK package/permission/hash sealing.
+`ai-g732` rebuilds accepted application source with pinned toolchains and produces the trusted APK/JNI artifact eligible for the R8 freeze.
 
-A Process A PASS is a prerequisite/input for Panther integration, not Panther runtime proof.
+### B1 — pre-image product integration
 
-### Process B — Panther product/device integration
+`ai-g732` proves Soong/import, certificate/signing mode, JNI handling, dexpreopt/uses-library state, product selection and PRODUCT_OUT installation before a broad Panther image build.
 
-Panther validation begins from exact frozen source/artifact/image identities and proves Android product/device behavior.
+### B2 — Panther image/device
+
+Panther validation begins only after the exact A2 artifact freeze and B1 product-integration state are known.
 
 ## 2. Evidence progression
 
-For a product/device claim use the appropriate ladder:
-
 ```text
 requirements/source identity
- -> standalone qualified artifact identity
- -> product import/module declaration
+ -> A1 qualification
+ -> A2 trusted artifact identity
+ -> B1 import/module processing
  -> product selection
  -> PRODUCT_OUT
- -> target-files/image
+ -> target-files
+ -> filesystem image
  -> image/build hash
  -> installed runtime package/component
+ -> runtime certificate/page-size/JNI state
  -> role/default/permission state
  -> user-visible/device behavior
  -> regression/recovery behavior
 ```
 
-Not every change needs every layer, but no earlier layer silently proves a later one.
+No earlier layer silently proves a later one.
 
 ## 3. Claim discipline
 
 Examples:
 
-- Rust/Gradle compile does not prove image inclusion.
+- A1 Gradle/Rust PASS does not prove A2 trusted artifact identity.
+- A2 APK PASS does not prove Soong/product integration.
+- PRODUCT_OUT does not prove image membership.
 - image inclusion does not prove launcher/default-role behavior.
 - a working Activity does not prove HOME adoption.
-- one screenshot does not prove launcher inventory completeness.
 - one carrier/network path does not qualify every carrier.
 - on-device OCR/translation does not prove strict network-free operation when model acquisition may use Internet.
-- one Reader upstream APK does not define the final one-product Sable Reader composition.
+- one Reader upstream APK does not define final one-product Sable Reader composition.
 
-Use `sableos-project/build/docs/MILESTONE_EVIDENCE_GATES.md` for the current evidence gate model.
+Use `sableos-project/build/docs/MILESTONE_EVIDENCE_GATES.md` and `build/docs/R8_PREIMAGE_GATE.md`.
 
-## 4. Historical R5/R6 context
+## 4. R7 baseline
 
-Earlier Panther/SableStart work established source migration/build and launcher requirements. Those records remain historical evidence but are no longer the forward milestone sequence.
+`R7_DAILY_DRIVER_VALIDATION.md` remains the daily-driver matrix for calls/contacts, SMS/MMS, Wi-Fi/cellular, browser/Internet, notifications, Settings, camera/photos/files, clock/alarm, Calculator baseline and Sable Start integration.
 
-Do not treat the historical workspace copy or an old build output tree as permanent architecture merely because it produced valuable evidence.
+R7 product forensics also reinforce source/prebuilt -> graph -> product selection -> PRODUCT_OUT -> target-files/image -> runtime distinctions.
 
-## 5. R7 baseline
+Unexecuted R7 runtime cases remain unproven.
 
-`R7_DAILY_DRIVER_VALIDATION.md` remains the daily-driver requirement matrix for:
+## 5. B2 Panther image prerequisites
 
-- calls/contacts;
-- SMS/MMS;
-- Wi-Fi/cellular;
-- browser/Internet;
-- notifications;
-- Settings;
-- camera/photos/files;
-- clock/alarm;
-- Calculator baseline;
-- Sable Start integration.
-
-R7 also established/strengthened Panther product-wiring evidence. Recent firmware forensics proved direct source/product/target-files provenance for ABL, aggregate bootloader and radio, while keeping current-graph declaration, historical output execution and runtime claims distinct.
-
-Unexecuted R7 runtime cases remain unproven and can serve as regression gates for the next accepted R8 image.
-
-## 6. R8 Panther integration gate
-
-Panther image/device work starts only after:
+Before the next Panther image:
 
 ```text
-selected R8 standalone app lanes PASS or explicitly deferred
-exact R8 integration freeze exists
-shared R8-A contract aligned
-Android product import/wiring mechanism proven
-trusted builder migration/preflight PASS
+selected A1 lanes PASS or deferred
+A2 trusted artifacts PASS
+exact R8 application freeze exists
+R8-A shared contract aligned
+B1 Soong/import/product-selection/PRODUCT_OUT proof PASS
+ai-g732 migration/preflight PASS
+isolated Panther OUT_DIR bound
 ```
 
-The next intended full R8 Panther build is on `ai-g732` after the expanded-storage/source/tool environment is sealed.
-
-## 7. R8 image acceptance
+## 6. Panther image acceptance
 
 Bind the device campaign to exact:
 
 ```text
 platform_manifest/source identity
-frozen app artifact/source identities
+trusted A2 app/source/toolchain identities
+B1 product integration identity
 build host/environment identity
 product/release/variant/Build ID
 image hashes/fingerprint
@@ -114,30 +96,30 @@ package/component inventory
 
 Then validate as applicable:
 
-- R8 application presence and launcher visibility;
-- app package/component/ABI identity;
+- R8 application presence/launcher visibility;
+- package/component/ABI identity;
 - R8-A design behavior;
 - Calculator/Convert/Games representative interaction/accessibility;
-- Sable Reader accepted EPUB/TXT/share/TTS/OCR composition;
+- one Sable Reader accepted EPUB/TXT/share/TTS/OCR composition;
 - Reader network/model-download policy;
-- Media local storage and Internet-radio authority boundaries;
+- Media storage/network boundaries;
 - permissions/AppOps/roles/defaults;
+- runtime page size;
+- representative Rust JNI execution;
 - required R7 regressions;
 - reboot-dependent behavior only when reboot is authorized.
 
-## 8. Failure classification
-
-Before source/product mutation classify failures:
+## 7. Failure classification
 
 ```text
 REQUIREMENTS
-APPLICATION_SOURCE
-APPLICATION_BUILD
-JNI_NATIVE
-ARTIFACT_PROVENANCE
-PRODUCT_IMPORT
-PRODUCT_SELECTION
-PRODUCT_INSTALL
+A1_APPLICATION_SOURCE
+A1_APPLICATION_BUILD
+A2_TRUSTED_ARTIFACT
+A2_NATIVE_16K
+B1_PRODUCT_IMPORT
+B1_PRODUCT_SELECTION
+B1_PRODUCT_INSTALL
 ANDROID_FRAMEWORK/SUBSTRATE
 DEVICE_ADAPTER
 VENDOR/BSP/FIRMWARE
@@ -147,36 +129,38 @@ TEST_ENVIRONMENT
 UNKNOWN
 ```
 
-A failure seen on Panther is not enough evidence that the fix belongs in `device_sable_panther`.
+A failure seen on Panther is not sufficient evidence that the fix belongs in `device_sable_panther`.
 
-## 9. Device-operation authorization
+## 8. Titan 2 sequencing
 
-Device contact is separate from mutation authority. State authorization independently for:
+Titan 2 portability qualification begins after Panther development acceptance for the selected R8 tranche.
 
-- install/uninstall;
-- flashing/update;
-- reboot;
-- radio/network changes;
-- role/default-app changes;
-- root/remount;
-- slot changes;
-- userdata/metadata wipe.
+Where compatible it should consume the same frozen common R8 artifacts and common `vendor_sable` product integration with a separate OUT_DIR and bounded Titan adapter.
 
-Do not infer destructive permission from permission to inspect the device.
+Panther evidence does not substitute for Titan-specific physical-keyboard, square-display, Media3/audio, OCR/TTS, page-size and runtime acceptance.
 
-## 10. Evidence privacy
+## 9. Production signing boundary
 
-Public qualification records must avoid disclosing phone numbers, message contents, Wi-Fi credentials, private contacts, account identifiers, carrier account data or other user secrets.
+Production signing is not part of Panther R8 development acceptance. AVB/OTA/production app-key work begins later only after Panther and Titan 2 development qualification is satisfactory.
 
-Sanitize while preserving enough evidence to substantiate the technical claim.
+The ThinkPad P50 is a future signing-host candidate only; no active `sable-signer-01` exists.
 
-## 11. Closure
+## 10. Device-operation authorization
 
-A Panther campaign reports bounded results, for example:
+Device contact is separate from mutation authority. State authorization independently for install/uninstall, flashing/update, reboot, radio/network changes, roles/defaults, root/remount, slot changes and userdata/metadata wipe.
+
+## 11. Evidence privacy
+
+Public evidence must avoid phone numbers, message contents, Wi-Fi credentials, private contacts, account identifiers, carrier account data and other secrets while retaining enough sanitized proof for the technical claim.
+
+## 12. Closure
+
+Use bounded results, for example:
 
 ```text
 IMAGE_IDENTITY=PASS
 R8_REQUIRED_PACKAGES=PASS
+R8_NATIVE_RUNTIME=PASS/FAIL/BLOCKED
 R8_APP_RUNTIME=PASS/FAIL/BLOCKED
 R7_DAILY_DRIVER_REGRESSION=PASS/FAIL/BLOCKED
 DEFAULT_ROLE_STATE=PASS/NOT_TESTED
@@ -184,4 +168,4 @@ REBOOT_PERSISTENCE=PASS/NOT_TESTED
 PANTHER_R8_INTEGRATION_CLOSURE=PASS/FAIL
 ```
 
-Do not replace those layers with a single "device works" statement.
+Do not replace those layers with one `device works` statement.
