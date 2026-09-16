@@ -1,81 +1,187 @@
 # Panther validation model
 
-Panther remains the primary physical validation target for current SableOS development.
+Status: **normative Panther product/runtime validation model.**
 
-## Evidence progression
+Panther remains the primary physical validation target for current SableOS development. Application correctness and Panther product/runtime correctness are deliberately separated so the device is not used to compensate for missing standalone app tests.
 
-Changes should be qualified in layers appropriate to the claim:
+## 1. Two-process boundary
 
-1. exact source identity and bounded diff;
-2. static/pre-build checks;
-3. module or affected-target build;
-4. artifact/package inspection;
-5. controlled device deployment when separately authorized;
-6. runtime/interaction validation;
-7. provider/network/hardware behavior validation;
-8. regression and recovery validation for broader system changes;
-9. clean source reconstruction when the claim depends on repository/manifest portability.
+### Process A — outside this repository
 
-## Claim discipline
+Standalone R8 application qualification happens through the application's Cargo/Gradle/upstream workflow and disposable CI/local test environments.
 
-Compilation does not prove runtime correctness. A working preview Activity does not prove HOME-role adoption or SystemUI replacement. One launch timing does not establish performance. Provider package presence does not prove user data correctness. One carrier/network path does not qualify every carrier. A screenshot of an app list does not by itself prove launcher-inventory completeness.
+Examples:
 
-Use `sableos-project/build/docs/MILESTONE_EVIDENCE_GATES.md` for the current gate/evidence model.
+- Rust domain correctness/security;
+- Kotlin/JVM tests;
+- Android lint/static analysis;
+- standalone APK builds;
+- JNI/native ABI packaging;
+- Reader/Text Reader upstream pin/flavor tests;
+- APK package/permission/hash sealing.
 
-## Current source/build boundary
+A Process A PASS is a prerequisite/input for Panther integration, not Panther runtime proof.
 
-The validated Sable Start R3 source has progressed beyond the old compile-stage description:
+### Process B — Panther product/device integration
 
-- recursive R4 source capture into `sableos-project/packages_apps_SableStart` passed;
-- exact local migration commit/tree seal passed;
-- the sealed migration commit was pushed without rewrite;
-- PR #1 contains the 12 validated source additions;
-- direct build/reconstruction from the migrated checkout remains an R5 gate until its actual build evidence is reviewed;
-- clean reconstruction through `platform_manifest` remains separate.
+Panther validation begins from exact frozen source/artifact/image identities and proves Android product/device behavior.
 
-Do not treat the historical Panther workspace copy as permanent architecture merely because it was the original validation source.
+## 2. Evidence progression
 
-## R6 relationship
-
-After R5 migration/build closure, Sable Start R6 owns launcher-visible inventory, Search sharing, live package refresh, launch behavior, and local-time greeting requirements in:
+For a product/device claim use the appropriate ladder:
 
 ```text
-packages_apps_SableStart/docs/R6_ALL_APPS_AND_GREETING.md
+requirements/source identity
+ -> standalone qualified artifact identity
+ -> product import/module declaration
+ -> product selection
+ -> PRODUCT_OUT
+ -> target-files/image
+ -> image/build hash
+ -> installed runtime package/component
+ -> role/default/permission state
+ -> user-visible/device behavior
+ -> regression/recovery behavior
 ```
 
-Panther provides the primary physical runtime validation target, but R6 behavior remains common Sable Start behavior rather than Panther-specific code.
+Not every change needs every layer, but no earlier layer silently proves a later one.
 
-## R7 daily-driver qualification
+## 3. Claim discipline
 
-The next broad Panther system-qualification milestone is:
+Examples:
+
+- Rust/Gradle compile does not prove image inclusion.
+- image inclusion does not prove launcher/default-role behavior.
+- a working Activity does not prove HOME adoption.
+- one screenshot does not prove launcher inventory completeness.
+- one carrier/network path does not qualify every carrier.
+- on-device OCR/translation does not prove strict network-free operation when model acquisition may use Internet.
+- one Reader upstream APK does not define the final one-product Sable Reader composition.
+
+Use `sableos-project/build/docs/MILESTONE_EVIDENCE_GATES.md` for the current evidence gate model.
+
+## 4. Historical R5/R6 context
+
+Earlier Panther/SableStart work established source migration/build and launcher requirements. Those records remain historical evidence but are no longer the forward milestone sequence.
+
+Do not treat the historical workspace copy or an old build output tree as permanent architecture merely because it produced valuable evidence.
+
+## 5. R7 baseline
+
+`R7_DAILY_DRIVER_VALIDATION.md` remains the daily-driver requirement matrix for:
+
+- calls/contacts;
+- SMS/MMS;
+- Wi-Fi/cellular;
+- browser/Internet;
+- notifications;
+- Settings;
+- camera/photos/files;
+- clock/alarm;
+- Calculator baseline;
+- Sable Start integration.
+
+R7 also established/strengthened Panther product-wiring evidence. Recent firmware forensics proved direct source/product/target-files provenance for ABL, aggregate bootloader and radio, while keeping current-graph declaration, historical output execution and runtime claims distinct.
+
+Unexecuted R7 runtime cases remain unproven and can serve as regression gates for the next accepted R8 image.
+
+## 6. R8 Panther integration gate
+
+Panther image/device work starts only after:
 
 ```text
-docs/R7_DAILY_DRIVER_VALIDATION.md
+selected R8 standalone app lanes PASS or explicitly deferred
+exact R8 integration freeze exists
+shared R8-A contract aligned
+Android product import/wiring mechanism proven
+trusted builder migration/preflight PASS
 ```
 
-R7 covers calls, contacts, SMS/MMS, Wi-Fi, cellular data, browser/Internet, notifications, Settings, camera/photos, files, clock/alarm, calculator, and their accessibility through Sable Start.
+The next intended full R8 Panther build is on `ai-g732` after the expanded-storage/source/tool environment is sealed.
 
-Daily-driver failures must be classified to the correct layer before mutation:
+## 7. R8 image acceptance
+
+Bind the device campaign to exact:
 
 ```text
-PRODUCT_UI
-SABLE_COMMON_CODE
+platform_manifest/source identity
+frozen app artifact/source identities
+build host/environment identity
+product/release/variant/Build ID
+image hashes/fingerprint
+package/component inventory
+```
+
+Then validate as applicable:
+
+- R8 application presence and launcher visibility;
+- app package/component/ABI identity;
+- R8-A design behavior;
+- Calculator/Convert/Games representative interaction/accessibility;
+- Sable Reader accepted EPUB/TXT/share/TTS/OCR composition;
+- Reader network/model-download policy;
+- Media local storage and Internet-radio authority boundaries;
+- permissions/AppOps/roles/defaults;
+- required R7 regressions;
+- reboot-dependent behavior only when reboot is authorized.
+
+## 8. Failure classification
+
+Before source/product mutation classify failures:
+
+```text
+REQUIREMENTS
+APPLICATION_SOURCE
+APPLICATION_BUILD
+JNI_NATIVE
+ARTIFACT_PROVENANCE
+PRODUCT_IMPORT
+PRODUCT_SELECTION
+PRODUCT_INSTALL
 ANDROID_FRAMEWORK/SUBSTRATE
 DEVICE_ADAPTER
 VENDOR/BSP/FIRMWARE
 CARRIER/NETWORK
+RUNTIME_APP
 TEST_ENVIRONMENT
 UNKNOWN
 ```
 
-A failure observed on Panther is not sufficient evidence that the fix belongs in `device_sable_panther`.
+A failure seen on Panther is not enough evidence that the fix belongs in `device_sable_panther`.
 
-## Device-operation authorization
+## 9. Device-operation authorization
 
-Physical-device validation should explicitly state authorization for device contact and any additional operations such as install/uninstall, reboot, radio/network state changes, role/default-app changes, slot changes, root/remount, or userdata/metadata wipe.
+Device contact is separate from mutation authority. State authorization independently for:
 
-Routine validation must not infer destructive authorization from permission to contact the device.
+- install/uninstall;
+- flashing/update;
+- reboot;
+- radio/network changes;
+- role/default-app changes;
+- root/remount;
+- slot changes;
+- userdata/metadata wipe.
 
-## Evidence privacy
+Do not infer destructive permission from permission to inspect the device.
 
-Public Panther qualification records should avoid publishing phone numbers, message contents, carrier account identifiers, Wi-Fi credentials, private contact data, or other user secrets. Preserve enough sanitized evidence to substantiate the technical claim.
+## 10. Evidence privacy
+
+Public qualification records must avoid disclosing phone numbers, message contents, Wi-Fi credentials, private contacts, account identifiers, carrier account data or other user secrets.
+
+Sanitize while preserving enough evidence to substantiate the technical claim.
+
+## 11. Closure
+
+A Panther campaign reports bounded results, for example:
+
+```text
+IMAGE_IDENTITY=PASS
+R8_REQUIRED_PACKAGES=PASS
+R8_APP_RUNTIME=PASS/FAIL/BLOCKED
+R7_DAILY_DRIVER_REGRESSION=PASS/FAIL/BLOCKED
+DEFAULT_ROLE_STATE=PASS/NOT_TESTED
+REBOOT_PERSISTENCE=PASS/NOT_TESTED
+PANTHER_R8_INTEGRATION_CLOSURE=PASS/FAIL
+```
+
+Do not replace those layers with a single "device works" statement.
