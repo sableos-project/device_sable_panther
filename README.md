@@ -1,5 +1,17 @@
 # SableOS Panther device integration
 
+![Local CI](https://img.shields.io/badge/CI-local%20direct-active-2ea44f)
+![R9 Launcher](https://img.shields.io/badge/R9%20launcher%20visual-PASS-2ea44f)
+![Fresh Panther](https://img.shields.io/badge/fresh%20Panther%20build-IN%20PROGRESS-f0ad4e)
+![Pixel 7](https://img.shields.io/badge/Pixel%207%20physical-PENDING-lightgrey)
+![Titan 2](https://img.shields.io/badge/Titan%202-keyboard--first%20QUEUED-6f42c1)
+
+## Current R9 qualification state
+
+Panther remains the primary full-stack reference. R9 Launcher3/Sable Start visual qualification is PASS. An incremental target-files/product-composition run is also PASS, but that result is intentionally **not** treated as fresh full-build proof. The current release candidate must start from an absent source-bound OUT, generate fresh target-files, and only then may physical Pixel 7 flashing/runtime qualification proceed.
+
+Titan 2 mutation remains queued behind this Panther acceptance; its interaction profile is keyboard-first rather than a touch-first Panther layout with shortcuts added later.
+
 Bounded Google Pixel 7 (`panther`) integration and physical qualification boundary for SableOS.
 
 This repository is a **device adapter and runtime qualification owner**. It must not contain forked copies of common Sable applications or common product semantics merely because Panther is the current PRIMARY reference target.
@@ -12,34 +24,22 @@ Common app behavior belongs in common application/platform repositories. Common 
 
 Organization-wide security, test, coverage and performance policy is defined in `sableos-project/.github/docs/SECURITY_QUALITY_ENGINEERING.md`.
 
-## Current R8 sequence
+## Current release sequence
 
 ```text
-R7 evidence baseline
+R8 app/product foundation
         |
         v
-A1 disposable application qualification
+R9 Launcher3/Sable Start visual closure        PASS
         |
         v
-A2 trusted standalone application build on ai-g732
+source-bound fresh Panther full build          IN PROGRESS
         |
         v
-exact R8 application freeze
+physical Pixel 7 HOME/Quickstep/runtime gate   PENDING
         |
         v
-B1 pre-image Soong/product integration on ai-g732
-        |
-        v
-B2 Panther development image
-        |
-        v
-Panther R8 static + functional + regression campaign
-        |
-        v
-fresh reconstruction / repeatability proof
-        |
-        v
-B3 Titan 2 portability image/campaign
+Titan 2 keyboard-first portability campaign    QUEUED
 ```
 
 R8 does **not** make `device_sable_panther` an app compiler/source repository.
