@@ -1,5 +1,8 @@
 # Panther validation model
 
+> **Current execution overlay — 2026-09-20:** R9 physical Panther acceptance is pending a source-bound fresh full build. Incremental/warmed-OUT target-files composition PASS is not classified as fresh-build proof. Physical flash/runtime validation begins only after the fresh OUT and target-files freshness/causality gates pass.
+
+
 Status: **normative Panther product/runtime validation model.**
 
 Panther remains the primary physical validation target. Application correctness, trusted artifact production, Panther product integration and Panther runtime correctness are separate claims.
