@@ -1,19 +1,41 @@
 # Panther porting boundary
 
-Panther is the current primary SableOS reference target, but Panther-specific code must remain narrowly scoped.
+Status: **current frozen-reference boundary — 2026-09-24**
 
-## Upstream-owned
+Panther / Pixel 7 is the physically accepted R9 touch-first reference and is now
+`REFERENCE_FROZEN`.
 
-The GrapheneOS/Google Panther substrate remains responsible for the normal device tree, kernel/vendor integration, partition model, hardware support, and Android platform behavior unless a Sable-specific change is explicitly justified.
+Panther-specific code must remain narrowly scoped.
 
-## Sable-owned Panther layer
+## Upstream substrate ownership
 
-This repository may contain only Panther-specific Sable integration that cannot remain common, such as bounded target overlays, product hooks, policy additions, or compatibility glue.
+The Google/GrapheneOS-derived Panther substrate remains responsible for normal
+device tree, kernel/vendor integration, partition model, hardware support and
+Android platform behavior unless a Sable-specific change is explicitly
+justified.
 
-## Rejected pattern
+## Sable Panther ownership
 
-Do not copy common Sable applications, services, or platform policy into this repository. A Panther-only fix to common product behavior is a signal that the abstraction boundary should be reviewed.
+This repository may contain only Panther-specific Sable integration that cannot
+remain common, such as bounded target overlays, product hooks, policy additions
+or compatibility glue.
 
-## Migration rule
+Do not copy common Sable apps/services/platform semantics here.
 
-Before moving existing Panther-specific changes here, classify every file as common product, common platform, build tooling, or truly target-specific. Do not migrate by directory name alone.
+## Frozen-reference rule
+
+New product design is not driven by Panther by default. A common feature may be
+regression-tested on Panther, but that does not make Panther the active feature
+target.
+
+Security-critical or common-regression maintenance may still justify bounded
+Panther changes.
+
+## Portability signal
+
+A workaround that appears on Panther but expresses common product behavior is a
+signal to review the abstraction boundary, not a reason to create a Panther-only
+fork.
+
+Titan 2 / Titan 2 Elite have independent adapters and evidence. Panther runtime,
+camera, telephony, display or flash PASS never substitutes for Titan evidence.
