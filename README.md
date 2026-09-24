@@ -55,3 +55,7 @@ A Panther PASS never implies Titan runtime, camera, keyboard, telephony or
 performance PASS.
 
 Common applications and product semantics belong outside this device repository.
+
+## Tooling role
+
+K1/K2 preserves Panther as the qualified `target-files` / A-B fastboot deployment adapter while moving generic artifact identity and common deployment safety/evidence into shared tooling. This does not reopen the frozen Panther image source.
