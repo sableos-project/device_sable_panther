@@ -26,6 +26,17 @@ New product features should be designed in common Sable repositories and
 qualified first on the active keyboard-first targets unless the feature is
 specifically Panther maintenance.
 
+## Frozen reference identity
+
+```text
+R9_PANTHER_IMAGE_SOURCE=6f1d6d2f0f2525067874238c4b797ad58f2bcbc6
+R9_PANTHER_TARGET_FILES_SHA256=08ef429c7f9eef17de7ddad4ce9baa81911950e8d34b6751b6e4588f66821502
+REFERENCE_BRANCH=reference/panther-r9-accepted-20260924
+```
+
+These IDs describe the accepted image. Later documentation/build-tool commits do
+not become new Panther image qualification sources.
+
 ## Accepted launcher boundary
 
 The final R9 architecture is:
