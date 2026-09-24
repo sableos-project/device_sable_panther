@@ -1,6 +1,9 @@
 # R7 — Panther daily-driver validation matrix
 
-Status: **normative Panther qualification requirements for the current daily-driver milestone.**
+> **HISTORICAL R7 REQUIREMENTS/EVIDENCE — 2026-09-24 classification:** this matrix records the earlier Panther daily-driver qualification requirements and its then-pending rows. Panther later completed R9 physical acceptance and is now REFERENCE_FROZEN. Do not interpret the old pending cells as current project status; preserve them as historical requirement state.
+
+
+Status: **HISTORICAL_EVIDENCE / SUPERSEDED CURRENT STATUS.**
 
 Target: Google Pixel 7 (`panther`).
 
