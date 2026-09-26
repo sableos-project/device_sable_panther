@@ -36,6 +36,14 @@ PRIVATE_MERGE_COMMIT=f175b00f
 REFERENCE_STATE=FROZEN_AFTER_HUB_V1_CLOSURE
 ```
 
+Public product/UI demo:
+
+- [Panther R9 Hub V1 overall UI/UX demo](https://github.com/sableos-project/.github/releases/tag/panther-r9-hub-v1-demo-20260925)
+
+This release asset demonstrates the accepted Panther touch-first reference. It
+is not a new Panther image qualification artifact and does not supersede the
+source or target-files identities above.
+
 These IDs describe the accepted image. Later documentation/build-tool commits do
 not become new Panther image qualification sources.
 
