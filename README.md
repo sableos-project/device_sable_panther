@@ -65,8 +65,8 @@ of their account/database/protocol semantics.
 
 ```text
 Panther        frozen touch-first reference
-Titan 2        active keyboard-first PORTABILITY/N0
-Titan 2 Elite  independent keyboard-first PORTABILITY candidate
+Titan 2        active keyboard-first N1D/C3B engineering target
+Titan 2 Elite  independent keyboard-first candidate / separate evidence required
 Q27            research / future product candidate
 ```
 
